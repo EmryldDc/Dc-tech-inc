@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DC — Gifted Mind Concept.xlsx (DC Tech Inc.)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    user-select: none;
+    margin: 0;
+  }
+  .excel-table { border-collapse: collapse; table-layout: fixed; width: 100%; }
+  .excel-cell {
+    border: 1px solid #d4d4d8;
+    padding: 3px 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+  }
+  .excel-header {
+    background: #f4f4f5;
+    color: #52525b;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #d4d4d8;
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  .excel-selected {
+    outline: 2px solid #107c41 !important;
+    outline-offset: -1px;
+    background-color: #f0fdf4 !important;
+    position: relative;
+    z-index: 2;
+  }
+  .excel-selected::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 6px;
+    height: 6px;
+    background-color: #107c41;
+    border: 1px solid #ffffff;
+    cursor: crosshair;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #f1f1f1; }
+  ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 5px; }
+
+  /* ═══ AUTH MOTION GRAPHICS & MECHANICAL VAULT ═══ */
+  #auth-screen { transition: opacity 0.5s ease, transform 0.5s ease; }
+  #auth-screen.fade-out { opacity: 0; transform: scale(1.06); pointer-events: none; }
+
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(80px, -120px) scale(1.15); }
+    66% { transform: translate(-60px, 80px) scale(0.9); }
+  }
+  .auth-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .auth-orb-1 { width: 380px; height: 380px; background: #10b981; top: -100px; left: -100px; animation: float1 18s ease-in-out infinite; }
+  .auth-orb-2 { width: 320px; height: 320px; background: #059669; bottom: -80px; right: -80px; animation: float1 22s ease-in-out infinite reverse; }
+
+  @keyframes spinClockwise { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes spinCounter { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+  .gear-clockwise { animation: spinClockwise 8s linear infinite; }
+  .gear-counter { animation: spinCounter 10s linear infinite; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col bg-white text-gray-800 text-xs">
+
+<!-- ═══════════════════════════════════════════════════════
+     AUTH SCREEN WITH MECHANICAL VAULT UNLOCK
+     ═══════════════════════════════════════════════════════ -->
+<div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4" style="background: linear-gradient(135deg, #064e3b, #065f46, #134e4a);">
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="absolute inset-0 opacity-[0.06]" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+  <div class="relative z-10 w-full max-w-md">
+    <div class="text-center mb-5">
+      <div class="inline-flex items-center gap-2 mb-1.5">
+        <span class="w-11 h-11 bg-white text-[#107c41] rounded-xl flex items-center justify-center font-black text-2xl shadow-lg">X</span>
+        <span class="text-white text-3xl font-black tracking-tight">DC</span>
+      </div>
+      <p class="text-emerald-200/70 text-[11px] font-mono tracking-wider">GIFTED MIND CONCEPT · DC TECH INC.</p>
+      <div class="inline-block mt-1 bg-black/30 border border-emerald-500/40 text-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-mono">
+        ⚡ Offline-First Architecture Active
+      </div>
+    </div>
+
+    <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+      <div class="relative bg-black/25 rounded-lg p-1 flex mb-4 text-xs font-bold">
+        <div id="auth-tab-slider" class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-white rounded-md transition-transform duration-300 shadow-md"></div>
+        <button type="button" onclick="switchAuthTab('login')" id="auth-btn-login" class="relative z-10 flex-1 py-1.5 text-center text-emerald-900 transition">Sign In</button>
+        <button type="button" onclick="switchAuthTab('register')" id="auth-btn-register" class="relative z-10 flex-1 py-1.5 text-center text-white/70 transition">Create Account</button>
+      </div>
+
+      <!-- SIGN IN FORM -->
+      <form id="auth-form-login" class="space-y-3 text-xs" onsubmit="event.preventDefault(); startUnlockSequence('login');">
+        <div>
+          <label class="block text-[10px] font-bold text-emerald-100/80 uppercase tracking-wider mb-1">Email or Phone</label>
+          <input type="text" id="login-email" placeholder="you@example.com" value="owner@dc.tech" class="w-full bg-white/90 border-0 rounded-lg px-3 py-2.5 text-xs text-gray-900 font-medium outline-none" required>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-emerald-100/80 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" id="login-pass" placeholder="••••••••" value="Password123!" class="w-full bg-white/90 border-0 rounded-lg px-3 py-2.5 text-xs text-gray-900 font-medium outline-none" required>
+        </div>
+        <button type="submit" class="w-full bg-[#107c41] hover:bg-[#0b5c30] text-white font-bold py-3 rounded-lg shadow-lg text-xs transition">
+          Sign In & Unlock →
+        </button>
+        <p class="text-center text-[10px] text-emerald-200/60 pt-2">
+          Works offline! Data is stored on your device memory.
+        </p>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="auth-form-register" class="hidden space-y-2.5 text-xs" onsubmit="event.preventDefault(); startUnlockSequence('register');">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-emerald-100/80 uppercase mb-0.5">Email / Phone</label>
+            <input type="text" id="reg-email" placeholder="080... or email" required class="w-full bg-white/90 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-900 outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-emerald-100/80 uppercase mb-0.5">Password</label>
+            <input type="password" id="reg-pass" placeholder="••••••••" required class="w-full bg-white/90 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-900 outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-emerald-100 uppercase mb-0.5">Full Name</label>
+          <input type="text" id="reg-name" placeholder="John Doe" required class="w-full bg-white/90 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-900 outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-emerald-100 uppercase mb-0.5">Location</label>
+            <input type="text" id="reg-location" placeholder="Zaria, Kaduna" required class="w-full bg-white/90 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-900 outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-emerald-100 uppercase mb-0.5">Agent Code (Manual)</label>
+            <input type="text" id="reg-code" placeholder="AG-004" required class="w-full bg-white/90 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-emerald-900 outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-emerald-100/80 uppercase mb-0.5">Account Role:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="reg-role" value="agent" checked class="peer sr-only">
+              <div class="peer-checked:bg-emerald-500 peer-checked:text-white bg-white/20 text-emerald-100/80 rounded-lg py-1.5 text-center text-xs font-bold">Agent</div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="reg-role" value="admin" class="peer sr-only">
+              <div class="peer-checked:bg-emerald-500 peer-checked:text-white bg-white/20 text-emerald-100/80 rounded-lg py-1.5 text-center text-xs font-bold">Admin</div>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-[#107c41] hover:bg-[#0b5c30] text-white font-bold py-2 rounded-lg shadow-lg text-xs">
+          Create Account & Unlock →
+        </button>
+      </form>
+
+      <!-- MECHANICAL UNLOCK OVERLAY -->
+      <div id="unlock-mechanism-overlay" class="hidden absolute inset-0 bg-[#041f14]/95 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center z-50">
+        <div class="relative w-32 h-32 flex items-center justify-center mb-3">
+          <svg class="gear-clockwise absolute w-28 h-28 text-emerald-500/60" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="6 4" />
+          </svg>
+          <svg class="gear-counter absolute w-20 h-20 text-teal-400/80" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="10 6" />
+          </svg>
+          <div class="relative z-10 w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/50 border-2 border-white">
+            <span id="lock-icon" class="text-lg">🔒</span>
+          </div>
+        </div>
+        <div id="unlock-step-text" class="font-mono text-emerald-300 font-bold text-xs tracking-wider animate-pulse">
+          INITIALIZING DEVICE STORAGE...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN APPLICATION WORKSPACE
+     ═══════════════════════════════════════════════════════ -->
+<div id="app" class="h-screen w-screen flex flex-col overflow-hidden">
+
+  <!-- 1. EXCEL GREEN TITLE BAR -->
+  <header class="h-9 bg-[#107c41] text-white flex items-center justify-between px-3 text-xs flex-shrink-0 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 font-bold tracking-tight">
+        <span class="bg-white text-[#107c41] px-1.5 py-0.2 rounded font-black text-xs">X</span>
+        <span class="font-semibold">AutoSave</span>
+        <span class="bg-[#0b5c30] px-1.5 py-0.5 rounded text-[10px] font-mono uppercase">LOCAL</span>
+      </div>
+      <span class="text-emerald-200">|</span>
+      <div class="font-medium text-[11px] truncate flex items-center gap-1">
+        <span class="font-bold">DC_CRM_Master_GiftedMind.xlsx</span>
+        <span class="text-emerald-200">— Excel (DC Tech Inc.)</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2.5">
+      <!-- DYNAMIC NETWORK DETECTOR BADGE -->
+      <div id="network-badge" class="px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 bg-emerald-800 text-emerald-100 border border-emerald-600">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="network-text">Data Status Checking...</span>
+      </div>
+
+      <!-- OUTBOX COUNTER BUTTON -->
+      <button onclick="openOutboxModal()" id="outbox-pill" class="px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 bg-amber-400 text-amber-950 hover:bg-amber-300 cursor-pointer shadow-xs">
+        <span>📦 Outbox:</span>
+        <span id="outbox-count">0</span>
+      </button>
+
+      <div class="flex items-center gap-1.5 text-[11px] font-medium">
+        <span id="user-name">Dr. Ahmed Ibrahim</span>
+        <span id="user-code" class="text-[10px] font-mono bg-[#0b5c30] px-1.5 py-0.5 rounded">OWNER-001</span>
+        <span id="user-role" class="text-[9px] px-1.5 py-0.2 rounded font-bold uppercase bg-[#f59e0b] text-white">OWNER</span>
+      </div>
+      <button onclick="signOut()" class="text-[10px] bg-[#0b5c30] hover:bg-[#094826] px-2 py-1 rounded font-semibold transition">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- 2. EXCEL RIBBON TOOLBAR -->
+  <div class="bg-[#f3f2f1] border-b border-[#e1dfdd] text-xs flex-shrink-0">
+    <div class="flex items-center px-2 pt-1 gap-1 text-[11px] font-semibold text-gray-700">
+      <span class="px-2.5 py-0.5 hover:bg-gray-200 rounded-t cursor-pointer" onclick="switchTab2('contacts')">Home</span>
+      <span id="ribbon-tab-data" class="px-2.5 py-0.5 bg-white border-t-2 border-[#107c41] text-[#107c41] rounded-t cursor-pointer font-bold" onclick="switchTab2('contacts')">Data (Assigned Contacts)</span>
+      <span id="ribbon-tab-review" class="px-2.5 py-0.5 hover:bg-gray-200 rounded-t cursor-pointer font-medium" onclick="switchTab2('followup')">Review (Follow-ups)</span>
+      <span id="ribbon-tab-view" class="px-2.5 py-0.5 hover:bg-gray-200 rounded-t cursor-pointer font-medium" onclick="switchTab2('verification')">View (Submitted Works)</span>
+      <span id="ribbon-tab-calendar" class="px-2.5 py-0.5 hover:bg-gray-200 rounded-t cursor-pointer font-medium" onclick="switchTab2('calendar')">Calendar (Programme)</span>
+    </div>
+
+    <!-- Quick action tool row -->
+    <div class="h-10 px-3 flex items-center justify-between border-t border-gray-200 bg-[#f9fafb]">
+      <div class="flex items-center gap-2">
+        <input type="text" id="search" oninput="filterSpreadsheet()" placeholder="🔍 Find contacts..." class="border border-gray-300 rounded px-2 py-1 text-xs outline-none w-32 font-normal bg-white">
+        <select id="filter-status" onchange="filterSpreadsheet()" class="bg-white border border-gray-300 rounded px-2 py-1 text-[11px] font-medium outline-none">
+          <option value="ALL">Status: All Statuses</option>
+          <option value="booked">🟢 Booked</option>
+          <option value="followup">🟡 Follow-up</option>
+          <option value="not_booked">🔴 Not Booked</option>
+          <option value="new">⬜ New</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- ONE-TAP SYNC OUTBOX BUTTON -->
+        <button onclick="flushOutbox()" class="flex items-center gap-1.5 px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-bold text-[11px] shadow-xs">
+          <span>⚡</span> <span>Turn On Data & Sync Outbox</span>
+        </button>
+        <button onclick="openSubmitWorkModal()" class="flex items-center gap-1.5 px-3 py-1 bg-blue-700 hover:bg-blue-800 text-white rounded font-bold text-[11px] shadow-xs">
+          <span>📤</span> <span>Submit Shift to Admin</span>
+        </button>
+        <button onclick="triggerDocumentScan()" class="flex items-center gap-1.5 px-3 py-1 bg-gray-700 hover:bg-gray-800 text-white rounded font-bold text-[11px] shadow-xs">
+          <span>📷</span> <span>Scan Document</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. TOP WORKING CONTEXT BAR (SPONSOR, CONNECTOR, "KNOWN AS") -->
+  <section class="bg-emerald-900 text-white px-3 py-1.5 border-b border-emerald-950 flex flex-wrap items-center justify-between text-xs gap-y-1 flex-shrink-0 select-text">
+    <div class="flex items-center gap-3.5 flex-wrap">
+      <div class="flex items-center gap-1">
+        <span class="text-emerald-300 font-bold uppercase text-[10px]">Active Contact:</span>
+        <strong id="bar-contact-name" class="text-white font-bold text-xs">Alhaji Umar Farouk</strong>
+      </div>
+      <div class="flex items-center gap-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-700/60 text-[11px]">
+        <span class="text-emerald-300 text-[10px]">Sponsor:</span>
+        <span id="bar-sponsor-name" class="font-semibold">Dr. Bello Danbatta</span>
+        <span class="text-emerald-400 font-mono text-[10px]" id="bar-sponsor-phone">(08031112233)</span>
+      </div>
+      <div class="flex items-center gap-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-700/60 text-[11px]">
+        <span class="text-emerald-300 text-[10px]">Connector:</span>
+        <span id="bar-connector-name" class="font-semibold">Musa Garba</span>
+        <span class="text-emerald-400 font-mono text-[10px]" id="bar-connector-phone">(08123456789)</span>
+      </div>
+      <div class="flex items-center gap-1 bg-amber-400/20 px-2 py-0.5 rounded border border-amber-300/40 text-amber-200 text-[11px]">
+        <span class="text-amber-300 text-[10px] font-bold">Known As:</span>
+        <strong id="bar-known-as" class="text-amber-100">"Senior Brother / Chairman"</strong>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 text-[11px] font-mono">
+      <span>Gender: <strong id="bar-gender" class="text-emerald-200 font-sans">Male</strong></span>
+      <span>Location: <strong id="bar-location" class="text-emerald-200 font-sans">Sabon Gari, Zaria</strong></span>
+      <span class="bg-white text-emerald-950 px-1.5 py-0.2 rounded font-bold" id="bar-res-code">DCA/JD/6401AM</span>
+    </div>
+  </section>
+
+  <!-- 4. EXCEL FORMULA BAR -->
+  <div class="h-7 border-b border-[#d4d4d8] bg-white flex items-center px-1.5 flex-shrink-0 text-xs">
+    <div id="cell-ref" class="w-16 h-5 font-mono text-[11px] font-bold text-gray-700 border border-gray-300 px-1.5 flex items-center justify-center bg-[#fafafa]">
+      B2
+    </div>
+    <div class="flex items-center px-2 text-gray-400 font-bold select-none gap-1">
+      <span class="italic font-serif font-black text-gray-600">fx</span>
+    </div>
+    <input
+      type="text"
+      id="formula-bar"
+      value="Alhaji Umar Farouk"
+      oninput="updateSelectedCellContent(this.value)"
+      class="flex-1 h-5 px-2 font-normal text-xs text-gray-900 border-none outline-none focus:bg-emerald-50/30"
+    >
+  </div>
+
+  <!-- 5. WORKBOOK BODY (SHEETS) -->
+  <main class="flex-1 overflow-auto bg-[#e5e7eb] relative">
+    
+    <!-- SHEET 1: DATA (ASSIGNED CONTACTS SPREADSHEET) -->
+    <div id="view-contacts" class="inline-block min-w-full bg-white">
+      <table class="excel-table w-full">
+        <thead>
+          <tr class="h-5 select-none" id="col-letters">
+            <th class="excel-header w-10 !bg-[#e4e4e7]"></th>
+            <th class="excel-header w-32">A</th>
+            <th class="excel-header w-40">B</th>
+            <th class="excel-header w-32">C</th>
+            <th class="excel-header w-20">D</th>
+            <th class="excel-header w-36">E</th>
+            <th class="excel-header w-40">F</th>
+            <th class="excel-header w-32">G</th>
+            <th class="excel-header w-24">H</th>
+            <th class="excel-header w-36">I</th>
+            <th class="excel-header w-40">J</th>
+            <th class="excel-header w-40">K</th>
+            <th class="excel-header w-32">L</th>
+            <th class="excel-header w-28">M</th>
+          </tr>
+          <tr class="h-6 select-none bg-[#f4f4f5] text-gray-700 font-semibold border-b border-[#d4d4d8]">
+            <th class="excel-header !bg-[#e4e4e7]">#</th>
+            <th class="excel-header !text-left px-2 bg-emerald-50/70 text-emerald-900">Date & Day</th>
+            <th class="excel-header !text-left px-2">Contact Name</th>
+            <th class="excel-header !text-left px-2">Phone</th>
+            <th class="excel-header !text-left px-2">Gender</th>
+            <th class="excel-header !text-left px-2 bg-amber-50 text-amber-900">Known As (Connector)</th>
+            <th class="excel-header !text-left px-2">Connector & Phone</th>
+            <th class="excel-header !text-left px-2">Location</th>
+            <th class="excel-header !text-left px-2">Tier</th>
+            <th class="excel-header !text-left px-2">Assigned Agent</th>
+            <th class="excel-header !text-left px-2">Outcome Status</th>
+            <th class="excel-header !text-left px-2">Schedule</th>
+            <th class="excel-header !text-left px-2">Reservation Code</th>
+            <th class="excel-header !text-left px-2">Joined?</th>
+          </tr>
+        </thead>
+        <tbody id="contacts-body"></tbody>
+      </table>
+    </div>
+
+    <!-- SHEET 2: REVIEW (FOLLOW-UP QUEUE) -->
+    <div id="view-followup" class="hidden p-6 max-w-5xl mx-auto space-y-4"></div>
+
+    <!-- SHEET 3: VIEW (SUBMITTED WORKS & VERIFICATION ARCHIVE) -->
+    <div id="view-verification" class="hidden p-6 max-w-5xl mx-auto space-y-4">
+      <div class="bg-white p-4 rounded-lg border border-gray-300 shadow-sm flex justify-between items-center">
+        <div>
+          <h2 class="text-sm font-bold text-gray-800">View: Submitted Works & Admin Verification Archive</h2>
+          <p class="text-xs text-gray-500">Every agent submission is archived locally and synced to cloud when data is enabled</p>
+        </div>
+      </div>
+      <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-xs">
+        <table class="w-full text-xs text-left">
+          <thead class="bg-gray-100 border-b border-gray-300 font-bold text-gray-700">
+            <tr>
+              <th class="p-2">Batch ID</th>
+              <th class="p-2">Date & Day</th>
+              <th class="p-2">Submitted By</th>
+              <th class="p-2">Target Admin</th>
+              <th class="p-2 text-center">Calls / Bookings</th>
+              <th class="p-2">Status</th>
+              <th class="p-2 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="verification-logs-body" class="divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SHEET 4: CALENDAR (PROGRAMME VIEW) -->
+    <div id="view-calendar" class="hidden p-4 max-w-6xl mx-auto space-y-3">
+      <div class="bg-white p-3 rounded-lg border border-gray-300 shadow-xs flex justify-between items-center">
+        <div>
+          <h2 class="text-sm font-bold text-gray-800">📅 Weekly Programme — Mon to Sat</h2>
+          <p class="text-xs text-gray-500">Working schedule slots (Runs 100% offline)</p>
+        </div>
+      </div>
+      <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2"></div>
+    </div>
+
+    <!-- SHEET 5: OWNER-ONLY DELETED ARCHIVE -->
+    <div id="view-deleted" class="hidden p-6 max-w-4xl mx-auto space-y-4"></div>
+
+    <!-- PLACEHOLDERS FOR REMAINING TABS -->
+    <div id="view-distribution" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Distribution</div></div>
+    <div id="view-approvals" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Approvals</div></div>
+    <div id="view-reports" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Reports</div></div>
+    <div id="view-settings" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Settings</div></div>
+    <div id="view-organizations" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Organizations</div></div>
+    <div id="view-owners" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Owners</div></div>
+    <div id="view-audit" class="hidden p-8 max-w-4xl mx-auto text-center"><div class="bg-white p-10 rounded border">Coming soon: Audit Log</div></div>
+  </main>
+
+  <!-- 6. BOTTOM WORKBOOK SHEET TABS -->
+  <div class="h-9 bg-[#f3f2f1] border-t flex items-center px-2 text-xs gap-1 flex-shrink-0 overflow-x-auto select-none">
+    <button data-tab="contacts" onclick="switchTab2('contacts')" class="tab-btn h-full px-3 bg-white border-t-2 border-[#107c41] font-bold text-[#107c41] rounded-t flex items-center whitespace-nowrap shadow-xs">Sheet1: Data (Assigned)</button>
+    <button data-tab="followup" onclick="switchTab2('followup')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap">Sheet2: Review (Follow-ups)</button>
+    <button data-tab="verification" onclick="switchTab2('verification')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap">Sheet3: View (Verification)</button>
+    <button data-tab="calendar" onclick="switchTab2('calendar')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap">Sheet4: Calendar</button>
+
+    <!-- ADMIN + OWNER TABS -->
+    <button data-tab="distribution" onclick="switchTab2('distribution')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet5: Distribution</button>
+    <button data-tab="approvals" onclick="switchTab2('approvals')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet6: Approvals</button>
+    <button data-tab="reports" onclick="switchTab2('reports')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet7: Reports</button>
+    <button data-tab="settings" onclick="switchTab2('settings')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet8: Settings</button>
+
+    <!-- OWNER ONLY TABS -->
+    <button data-tab="deleted" onclick="switchTab2('deleted')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet9: Deleted</button>
+    <button data-tab="organizations" onclick="switchTab2('organizations')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet10: Organizations</button>
+    <button data-tab="owners" onclick="switchTab2('owners')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet11: Owners</button>
+    <button data-tab="audit" onclick="switchTab2('audit')" class="tab-btn h-full px-3 bg-transparent border-t-2 border-transparent rounded-t hover:bg-gray-200 flex items-center whitespace-nowrap hidden">Sheet12: Audit</button>
+
+    <span class="ml-auto text-[10px] text-gray-500 font-mono whitespace-nowrap pl-4">Ready · Offline Engine · © DC Tech Inc.</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OUTBOX QUEUE MODAL (OFFLINE SYNC MANAGER)
+     ═══════════════════════════════════════════════════════ -->
+<div id="outbox-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl border border-gray-300 w-full max-w-lg overflow-hidden text-xs">
+    <div class="bg-amber-600 text-white p-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📦</span>
+        <span class="font-bold text-sm">Offline Outbox & Dispatch Queue</span>
+      </div>
+      <button onclick="closeModal('outbox-modal')" class="text-white font-bold">✕</button>
+    </div>
+
+    <div class="p-4 space-y-3">
+      <p class="text-gray-600">
+        Items below were created while working offline. Turn on your mobile data, then tap <strong>"Sync Outbox Now"</strong> to dispatch SMS messages and upload shift reports.
+      </p>
+
+      <div id="outbox-items-container" class="max-h-60 overflow-y-auto space-y-2 border p-2 rounded bg-gray-50">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="pt-2 flex justify-between items-center border-t">
+        <span id="outbox-status-label" class="text-[11px] font-bold text-gray-600">0 items queued</span>
+        <button onclick="flushOutbox()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded shadow-xs">
+          ⚡ Turn On Data & Sync Outbox Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CALL PROMPTER MODAL -->
+<div id="call-prompter-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl border border-gray-300 w-full max-w-lg overflow-hidden text-xs">
+    <div class="bg-emerald-800 text-white p-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📞</span>
+        <span class="font-bold text-sm">Offline Caller Teleprompter</span>
+      </div>
+      <button onclick="closeModal('call-prompter-modal')" class="text-white font-bold">✕</button>
+    </div>
+
+    <div class="p-4 space-y-3.5">
+      <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 flex items-center justify-between">
+        <div>
+          <div class="font-bold text-gray-900 text-sm" id="call-lead-name">Alhaji Umar Farouk</div>
+          <div class="text-emerald-800 font-mono font-bold text-xs" id="call-lead-phone">+2348021112233</div>
+        </div>
+        <a id="call-lead-dial-btn" href="tel:+2348021112233" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-md flex items-center gap-1.5 shadow-xs">
+          <span>📞 Cellular Dial (No Data Needed)</span>
+        </a>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-bold text-gray-700 uppercase text-[10px] tracking-wider">Select Language Dialect:</span>
+          <span class="text-[10px] text-emerald-800 font-semibold" id="dialect-indicator">English Active</span>
+        </div>
+        <div class="grid grid-cols-5 gap-1.5">
+          <button type="button" onclick="switchDialect('en')" id="dialect-btn-en" class="py-1 px-1.5 border rounded text-center font-bold bg-emerald-700 text-white border-emerald-800 text-[11px]">English</button>
+          <button type="button" onclick="switchDialect('ha')" id="dialect-btn-ha" class="py-1 px-1.5 border rounded text-center font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300 text-[11px]">Hausa</button>
+          <button type="button" onclick="switchDialect('pid')" id="dialect-btn-pid" class="py-1 px-1.5 border rounded text-center font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300 text-[11px]">Pidgin</button>
+          <button type="button" onclick="switchDialect('yo')" id="dialect-btn-yo" class="py-1 px-1.5 border rounded text-center font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300 text-[11px]">Yoruba</button>
+          <button type="button" onclick="switchDialect('ig')" id="dialect-btn-ig" class="py-1 px-1.5 border rounded text-center font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300 text-[11px]">Igbo</button>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-300 rounded-lg p-3 space-y-2">
+        <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide flex justify-between">
+          <span>Relationship Pitch Hook</span>
+          <span class="text-amber-800">Connector Verified</span>
+        </div>
+        <div id="call-teleprompter-text" class="text-xs text-gray-800 leading-relaxed font-sans bg-white p-2.5 rounded border border-gray-200 italic">
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-gray-200 flex items-center justify-between">
+        <span class="text-gray-500 text-[11px]">Log outcome:</span>
+        <div class="flex items-center gap-1.5">
+          <button onclick="closeModal('call-prompter-modal'); openBookingModal(activeContactId);" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold text-xs">
+            🟢 Booked
+          </button>
+          <button onclick="closeModal('call-prompter-modal'); openStatusMenu(activeContactId);" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold text-xs">
+            🟡 Log Outcome
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div id="booking-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+  <div class="w-full max-w-xl bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden text-xs">
+    <div class="h-10 bg-[#107c41] text-white px-4 flex items-center justify-between">
+      <div class="font-bold flex items-center gap-1.5">
+        <span>📅 Confirm Appointment & Compose SMS</span>
+      </div>
+      <button onclick="closeModal('booking-modal')" class="text-emerald-200 hover:text-white font-bold text-sm">✕</button>
+    </div>
+
+    <div class="p-4 space-y-3">
+      <div class="p-2 bg-emerald-50 rounded border border-emerald-200 text-emerald-900 font-semibold text-[11px] flex justify-between">
+        <span>Booking Action Recorded On: <strong id="booking-banner-day">Tuesday, 17 Nov 2026</strong></span>
+        <span class="font-mono">Agent: <span id="booking-banner-agent">John Doe (AG-001)</span></span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Appointment Date * <span class="text-[10px] text-gray-500">(Mon–Sat)</span></label>
+          <input type="date" id="modal-date" value="" onchange="onDateChange()" class="w-full border border-gray-300 rounded p-1.5 font-medium outline-none focus:border-[#107c41]">
+          <div id="modal-day-label" class="text-[10px] text-emerald-800 font-bold mt-0.5">—</div>
+          <div id="modal-day-warning" class="hidden text-[10px] text-red-600 font-bold mt-0.5">⛔ Closed on Sundays — pick Mon–Sat</div>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Time Slot * <span class="text-[10px] text-gray-500">(Programme)</span></label>
+          <select id="modal-time" onchange="syncSmsMessagePreview()" class="w-full border border-gray-300 rounded p-1.5 font-medium outline-none focus:border-[#107c41]">
+            <option>— pick date first —</option>
+          </select>
+          <div id="modal-slot-availability" class="text-[10px] text-gray-500 mt-0.5"></div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1">Office Location *</label>
+        <input type="text" id="modal-office" value="Suite D7, D Plaza 1, Opposite De-Mobison Electronics, MTD - Zaria" oninput="syncSmsMessagePreview()" class="w-full border border-gray-300 rounded p-1.5 font-medium outline-none">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="font-semibold text-gray-800">Reservation Code * <span class="text-emerald-700 font-bold">(Manual Entry)</span></label>
+          <span class="text-[10px] text-gray-500 font-mono">Not auto-generated</span>
+        </div>
+        <input type="text" id="modal-code" value="" placeholder="Type agent code manually (e.g. DCA/JD/6406AM)" oninput="syncSmsMessagePreview()" class="w-full border-2 border-emerald-600 rounded p-1.5 font-mono text-emerald-900 font-bold bg-emerald-50/40 outline-none">
+      </div>
+
+      <div class="border border-gray-300 rounded-lg p-2.5 bg-gray-50 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="font-bold text-gray-800">✉️ Outgoing SMS (Queued for Delivery)</label>
+          <div class="flex items-center gap-2">
+            <span id="sms-char-counter" class="font-mono text-[10px] text-gray-500 bg-white px-1.5 py-0.5 rounded border border-gray-200">128 chars</span>
+            <button type="button" onclick="resetSmsToDefault()" class="text-[10px] text-emerald-700 hover:underline font-semibold">Reset Default</button>
+          </div>
+        </div>
+        <textarea id="modal-sms-body" rows="4" oninput="handleSmsTyping()" class="w-full border border-gray-300 rounded p-2 font-mono text-xs text-gray-800 bg-white leading-relaxed outline-none focus:border-[#107c41]"></textarea>
+        <p class="text-[10px] text-amber-800 font-medium">📦 If working offline, this will be saved to your Outbox and sent when mobile data is turned on.</p>
+      </div>
+
+      <div class="pt-2 flex items-center justify-end gap-2 border-t border-gray-200">
+        <button onclick="closeModal('booking-modal')" class="px-3 py-1.5 border border-gray-300 rounded text-gray-700 font-semibold hover:bg-gray-50">Cancel</button>
+        <button onclick="dispatchConfirmedBooking()" class="px-4 py-1.5 bg-[#107c41] hover:bg-[#0b5c30] text-white font-bold rounded shadow-sm">Confirm & Save (Queue SMS)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT WORK MODAL -->
+<div id="submit-work-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl border border-gray-300 w-full max-w-lg overflow-hidden text-xs">
+    <div class="bg-blue-800 text-white p-3.5 flex items-center justify-between">
+      <span class="font-bold text-sm">📤 Submit Shift Work to Admin</span>
+      <button onclick="closeModal('submit-work-modal')" class="text-white font-bold">✕</button>
+    </div>
+
+    <div class="p-4 space-y-3">
+      <p class="text-gray-600">
+        Save and lock your day's work. If offline, the submission is saved to the Outbox and submitted as soon as mobile data is enabled.
+      </p>
+      <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="admin-target-code" value="ADMIN-001" placeholder="Admin Code" class="border p-1.5 rounded font-mono font-bold">
+        <input type="text" id="admin-target-phone" value="+2348030000001" placeholder="Admin Phone" class="border p-1.5 rounded font-mono">
+      </div>
+      <textarea id="submission-notes" rows="2" placeholder="Agent handover note..." class="w-full border rounded p-2 text-xs"></textarea>
+      <div class="flex justify-end gap-2 pt-2 border-t">
+        <button onclick="closeModal('submit-work-modal')" class="px-3 py-1.5 border rounded">Cancel</button>
+        <button onclick="dispatchWorkSubmission()" class="px-4 py-1.5 bg-blue-700 text-white font-bold rounded">Lock Shift & Queue Submission</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS & REASON MODALS (Standard) -->
+<div id="status-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg w-96 max-h-[90vh] overflow-y-auto p-4 space-y-2 text-xs">
+    <div class="flex justify-between border-b pb-2"><span class="font-bold text-gray-800" id="status-title">Update Contact</span><button onclick="closeModal('status-modal')">✕</button></div>
+    <button onclick="chooseBooked()" class="w-full p-2 bg-emerald-50 text-emerald-800 rounded font-bold border border-emerald-300 text-left">🟢 Booked (open booking form)</button>
+    <div class="font-bold text-gray-400 uppercase text-[9px] pt-2">Follow-Up Options</div>
+    <button onclick="selectReasonCode('NO_ANSWER')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 NO_ANSWER (+1 day)</button>
+    <button onclick="selectReasonCode('NOT_REACHABLE')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 NOT_REACHABLE (+1 day)</button>
+    <button onclick="selectReasonCode('LINE_BUSY')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 LINE_BUSY (+1 day)</button>
+    <button onclick="selectReasonCode('SWITCHED_OFF')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 SWITCHED_OFF (+1 day)</button>
+    <button onclick="selectReasonCode('HANG_UP')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 HANG_UP (+2 days)</button>
+    <button onclick="selectReasonCode('CALL_LATER')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 CALL_LATER (+2 days)</button>
+    <button onclick="selectReasonCode('LANGUAGE_BARRIER')" class="w-full p-1.5 bg-amber-50 text-amber-900 rounded border border-amber-200 text-left">🟡 LANGUAGE_BARRIER (reassign)</button>
+    <div class="font-bold text-gray-400 uppercase text-[9px] pt-2">Not Booked Options</div>
+    <button onclick="selectReasonCode('NOT_INTERESTED')" class="w-full p-1.5 bg-red-50 text-red-700 rounded border border-red-200 text-left">🔴 NOT_INTERESTED</button>
+    <button onclick="selectReasonCode('WRONG_NUMBER')" class="w-full p-1.5 bg-red-50 text-red-700 rounded border border-red-200 text-left">🔴 WRONG_NUMBER</button>
+    <button onclick="selectReasonCode('HOSTILE')" class="w-full p-1.5 bg-red-50 text-red-700 rounded border border-red-200 text-left">🔴 HOSTILE</button>
+  </div>
+</div>
+
+<div id="reason-note-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg w-full max-w-sm p-4 space-y-3 text-xs shadow-2xl">
+    <div class="flex justify-between border-b pb-2"><span class="font-bold">Outcome Reason Note</span><button onclick="closeModal('reason-note-modal')">✕</button></div>
+    <div id="reason-note-badge" class="font-mono font-bold text-xs p-1.5 rounded">CODE</div>
+    <textarea id="reason-note-text" rows="3" class="w-full border rounded p-2 text-xs outline-none focus:border-[#107c41]"></textarea>
+    <div class="flex justify-end gap-2 pt-2 border-t">
+      <button onclick="closeModal('reason-note-modal')" class="px-3 py-1.5 border rounded">Cancel</button>
+      <button onclick="saveReasonNote()" class="px-4 py-1.5 bg-[#107c41] text-white font-bold rounded">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-xl text-xs z-[200]"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT: PERSISTENCE, OFFLINE QUEUE & CORE ENGINE
+     ═══════════════════════════════════════════════════════ -->
+<script>
+const PROGRAMME_SCHEDULE = {
+  Monday:    ['09:00 AM','10:00 AM','11:00 AM','12:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM'],
+  Tuesday:   ['09:00 AM','10:00 AM','11:00 AM','12:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM'],
+  Wednesday: ['09:00 AM','10:00 AM','11:00 AM','12:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM'],
+  Thursday:  ['09:00 AM','10:00 AM','11:00 AM','12:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM'],
+  Friday:    ['09:00 AM','10:00 AM','11:00 AM','12:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM'],
+  Saturday:  ['10:00 AM','11:00 AM','12:00 PM','01:00 PM']
+};
+
+const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function getDayName(dStr) { return dStr ? DAY_NAMES[new Date(dStr + 'T00:00:00').getDay()] : ''; }
+function getSlotsForDate(dStr) { return PROGRAMME_SCHEDULE[getDayName(dStr)] || []; }
+function isWorkingDay(dStr) { return getSlotsForDate(dStr).length > 0; }
+function addDays(n) { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
+function today() { return new Date().toISOString().slice(0, 10); }
+function formatShortDate(dStr) {
+  if (!dStr) return '—';
+  const d = new Date(dStr + 'T00:00:00');
+  return isNaN(d.getTime()) ? dStr : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ═══ LOCAL STORAGE PERSISTENCE (NOTHING LOST ON REFRESH) ═══
+const STORAGE_KEY_CONTACTS = 'dc_crm_contacts_v1';
+const STORAGE_KEY_OUTBOX = 'dc_crm_outbox_v1';
+const STORAGE_KEY_BATCHES = 'dc_crm_batches_v1';
+
+let outboxQueue = JSON.parse(localStorage.getItem(STORAGE_KEY_OUTBOX) || '[]');
+let verificationBatches = JSON.parse(localStorage.getItem(STORAGE_KEY_BATCHES) || '[]');
+
+let CURRENT_USER = {
+  name: 'Dr. Ahmed Ibrahim',
+  code: 'OWNER-001',
+  location: 'Zaria',
+  phone: '+2348030000001',
+  role: 'owner'
+};
+
+const INITIAL_CONTACTS = [
+  { id: 1, dateDay: formatShortDate(addDays(-1)), name: 'Alhaji Umar Farouk', phone: '+2348021112233', gender: 'Male', knownAs: 'Senior Brother / Chairman', connector: 'Musa Garba', connectorPhone: '08123456789', sponsor: 'Dr. Bello Danbatta', sponsorPhone: '08031112233', location: 'Sabon Gari, Zaria', tier: 'high_value', agent: 'John Doe', code: 'AG-001', status: 'booked', reason_code: 'BOOKED', reason: 'Booked · SMS sent ✅', date: addDays(1), dayName: getDayName(addDays(1)), schedule: `${formatShortDate(addDays(1)).slice(0, 11)} · 10:00 AM`, resCode: 'DCA/JD/6401AM', joined: 'joined', locked: false },
+  { id: 2, dateDay: formatShortDate(addDays(-2)), name: 'Grace Danjuma', phone: '+2348032223344', gender: 'Female', knownAs: 'Church Elder Sister', connector: 'Pastor Joshua', connectorPhone: '08029998877', sponsor: 'Engr. Sam Ade', sponsorPhone: '08034445566', location: 'Samaru, Zaria', tier: 'close', agent: 'John Doe', code: 'AG-001', status: 'followup', reason_code: 'NO_ANSWER', reason: 'no answer · retry today', retryDate: today(), schedule: '—', resCode: '—', joined: '', locked: false },
+  { id: 3, dateDay: formatShortDate(addDays(-2)), name: 'Ibrahim Musa', phone: '+2348053334455', gender: 'Male', knownAs: 'Business Colleague', connector: 'Aliyu Balarabe', connectorPhone: '08076665544', sponsor: 'Hajiya Fatima', sponsorPhone: '08021234567', location: 'Kongo, Zaria', tier: 'close', agent: 'Mary Bello', code: 'AG-002', status: 'not_booked', reason_code: 'NOT_INTERESTED', reason: 'not interested · logged Sun', schedule: '—', resCode: '—', joined: '', locked: false },
+  { id: 4, dateDay: formatShortDate(addDays(-3)), name: 'Fatima Yakubu', phone: '+2348164445566', gender: 'Female', knownAs: 'Childhood Neighbor', connector: 'Zainab Idris', connectorPhone: '08134447788', sponsor: 'Dr. Bello Danbatta', sponsorPhone: '08031112233', location: 'Tudun Wada, Zaria', tier: 'distant', agent: 'John Doe', code: 'AG-001', status: 'followup', reason_code: 'NOT_REACHABLE', reason: 'not reachable · was due yesterday', retryDate: addDays(-1), schedule: '—', resCode: '—', joined: '', locked: false },
+  { id: 5, dateDay: formatShortDate(addDays(-1)), name: 'Emeka Okafor', phone: '+2347035556677', gender: 'Male', knownAs: 'Gym Partner', connector: 'Stanley Obi', connectorPhone: '07038889900', sponsor: 'Chief E. Okafor', sponsorPhone: '08035551122', location: 'Kaduna Central', tier: 'high_value', agent: 'Mary Bello', code: 'AG-002', status: 'followup', reason_code: 'CALL_LATER', reason: 'call later · retry in 2 days', retryDate: addDays(2), schedule: '—', resCode: '—', joined: '', locked: false }
+];
+
+let contacts = JSON.parse(localStorage.getItem(STORAGE_KEY_CONTACTS) || 'null') || INITIAL_CONTACTS;
+
+function saveStateLocally() {
+  localStorage.setItem(STORAGE_KEY_CONTACTS, JSON.stringify(contacts));
+  localStorage.setItem(STORAGE_KEY_OUTBOX, JSON.stringify(outboxQueue));
+  localStorage.setItem(STORAGE_KEY_BATCHES, JSON.stringify(verificationBatches));
+  updateOutboxUI();
+}
+
+// ═══ NETWORK STATUS MONITOR ═══
+function checkNetworkState() {
+  const isOnline = navigator.onLine;
+  const badge = document.getElementById('network-badge');
+  const txt = document.getElementById('network-text');
+
+  if (isOnline) {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 bg-emerald-800 text-emerald-100 border border-emerald-600';
+    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>🟢 Data Connected</span>';
+  } else {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 bg-gray-800 text-gray-200 border border-gray-600';
+    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-400"></span><span>🔴 Data OFF (Saving to Phone)</span>';
+  }
+}
+
+window.addEventListener('online', checkNetworkState);
+window.addEventListener('offline', checkNetworkState);
+
+function updateOutboxUI() {
+  const count = outboxQueue.length;
+  document.getElementById('outbox-count').textContent = count;
+  const pill = document.getElementById('outbox-pill');
+  if (count > 0) {
+    pill.className = 'px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 bg-amber-400 text-amber-950 animate-bounce cursor-pointer';
+  } else {
+    pill.className = 'px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 bg-gray-200 text-gray-700 cursor-pointer';
+  }
+}
+
+function openOutboxModal() {
+  const c = document.getElementById('outbox-items-container');
+  if (outboxQueue.length === 0) {
+    c.innerHTML = '<div class="text-center p-4 text-gray-400">Outbox is empty. All messages and shifts are synced.</div>';
+  } else {
+    c.innerHTML = outboxQueue.map((item, idx) => `
+      <div class="p-2 bg-white rounded border flex justify-between items-center text-xs">
+        <div>
+          <span class="font-bold text-gray-900">[${item.type.toUpperCase()}]</span>
+          <span class="text-gray-600">${item.title}</span>
+          <div class="text-[10px] text-gray-400 font-mono">${item.timestamp}</div>
+        </div>
+        <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">Waiting for Data</span>
+      </div>
+    `).join('');
+  }
+  document.getElementById('outbox-status-label').textContent = `${outboxQueue.length} pending items`;
+  document.getElementById('outbox-modal').classList.remove('hidden');
+}
+
+// ═══ ON-DEMAND SYNC (WHEN MOBILE DATA IS TURNED ON) ═══
+function flushOutbox() {
+  if (!navigator.onLine) {
+    alert('🔴 Your mobile data is currently OFF.\n\nPlease enable your Mobile Data (MTN/Airtel/Glo) on your phone, then tap this button again to dispatch all queued messages.');
+    return;
+  }
+
+  if (outboxQueue.length === 0) {
+    alert('✅ Outbox is already empty! There are no pending SMS or shift reports waiting to be sent.');
+    return;
+  }
+
+  const itemsToSend = outboxQueue.length;
+  // Simulate dispatching via Termii API
+  alert(`⚡ Mobile Data Detected!\n\nDispatching ${itemsToSend} pending item(s) through Termii SMS gateway and syncing records to cloud database...`);
+
+  outboxQueue = [];
+  saveStateLocally();
+  closeModal('outbox-modal');
+  alert(`🎉 Success! All ${itemsToSend} SMS invitations delivered and shifts synced. You can now turn your mobile data back OFF to save battery.`);
+}
+
+function triggerDocumentScan() {
+  if (!navigator.onLine) {
+    alert('📷 Document Scanning requires Gemini Vision AI.\n\nPlease turn your Mobile Data ON for 30 seconds so the AI can read the handwritten list, then you can turn it off.');
+    return;
+  }
+  alert('📷 Mobile Data Connected: Launching Gemini Vision handwriting reader...');
+}
+
+// ═══ SPREADSHEET ENGINE ═══
+let selectedCoord = { r: 0, c: 1 };
+let activeContactId = 1;
+const colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+
+function renderSpreadsheet(data = contacts) {
+  const tbody = document.getElementById('contacts-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  data.forEach((row, rIdx) => {
+    const tr = document.createElement('tr');
+    tr.className = 'h-8 hover:bg-[#f5f5f5] ' + (row.locked ? 'bg-gray-50/70' : '');
+
+    let statusHtml = '';
+    if (row.status === 'booked') {
+      statusHtml = `<span class="inline-block bg-emerald-100 text-emerald-900 font-bold px-1.5 py-0.5 rounded text-[10px]">🟢 Booked</span>`;
+    } else if (row.status === 'followup') {
+      statusHtml = `<span class="inline-block bg-amber-100 text-amber-900 font-bold px-1.5 py-0.5 rounded text-[10px]">🟡 Follow-up</span>`;
+    } else if (row.status === 'not_booked') {
+      statusHtml = `<span class="inline-block bg-red-100 text-red-900 font-bold px-1.5 py-0.5 rounded text-[10px]">🔴 Not Booked</span>`;
+    } else {
+      statusHtml = `<span class="inline-block bg-gray-100 text-gray-700 font-semibold px-1.5 py-0.5 rounded text-[10px]">⬜ New</span>`;
+    }
+
+    const lockBadge = row.locked ? '<span title="Locked after Shift Submission" class="text-[10px] ml-1">🔒</span>' : '';
+
+    tr.innerHTML = `
+      <td class="excel-header !bg-[#e4e4e7]">${rIdx + 1}${lockBadge}</td>
+      <td id="cell-${rIdx}-0" onclick="clickCell(${rIdx}, 0, '${row.dateDay}', ${row.id})" class="excel-cell font-mono text-gray-700 font-semibold bg-emerald-50/20">${row.dateDay}</td>
+      <td id="cell-${rIdx}-1" onclick="clickCell(${rIdx}, 1, '${row.name}', ${row.id})" class="excel-cell font-medium text-gray-900">${row.name}</td>
+      <td id="cell-${rIdx}-2" onclick="openCallPrompter(${row.id})" class="excel-cell font-mono text-emerald-700 font-semibold cursor-pointer hover:underline hover:bg-emerald-50">
+        📞 ${row.phone}
+      </td>
+      <td id="cell-${rIdx}-3" onclick="clickCell(${rIdx}, 3, '${row.gender}', ${row.id})" class="excel-cell text-center text-gray-700">${row.gender}</td>
+      <td id="cell-${rIdx}-4" onclick="clickCell(${rIdx}, 4, '${row.knownAs}', ${row.id})" class="excel-cell font-semibold text-amber-900 bg-amber-50/40">${row.knownAs}</td>
+      <td id="cell-${rIdx}-5" onclick="clickCell(${rIdx}, 5, '${row.connector} (${row.connectorPhone})', ${row.id})" class="excel-cell text-gray-700">
+        ${row.connector} <span class="text-[10px] text-gray-400 font-mono">· ${row.connectorPhone}</span>
+      </td>
+      <td id="cell-${rIdx}-6" onclick="clickCell(${rIdx}, 6, '${row.location}', ${row.id})" class="excel-cell text-gray-600">${row.location}</td>
+      <td id="cell-${rIdx}-7" onclick="clickCell(${rIdx}, 7, '${row.tier}', ${row.id})" class="excel-cell capitalize">${row.tier.replace('_', ' ')}</td>
+      <td id="cell-${rIdx}-8" onclick="clickCell(${rIdx}, 8, '${row.agent} (${row.code})', ${row.id})" class="excel-cell">${row.agent}</td>
+      <td id="cell-${rIdx}-9" onclick="openStatusMenu(${row.id})" class="excel-cell cursor-pointer hover:bg-gray-100">${statusHtml}</td>
+      <td id="cell-${rIdx}-10" onclick="clickCell(${rIdx}, 10, '${row.schedule}', ${row.id})" class="excel-cell font-medium text-gray-800">${row.schedule}</td>
+      <td id="cell-${rIdx}-11" onclick="clickCell(${rIdx}, 11, '${row.resCode}', ${row.id})" class="excel-cell font-mono font-bold text-emerald-800">${row.resCode}</td>
+      <td class="excel-cell">
+        <select onchange="updateJoinedStatus(${row.id}, this.value)" class="w-full bg-transparent border-none text-[11px] font-semibold outline-none py-0.5">
+          <option value="" ${!row.joined ? 'selected' : ''}>—</option>
+          <option value="joined" ${row.joined === 'joined' ? 'selected' : ''}>Joined ✅</option>
+          <option value="attended" ${row.joined === 'attended' ? 'selected' : ''}>Attended</option>
+          <option value="no_show" ${row.joined === 'no_show' ? 'selected' : ''}>No-show → Retry</option>
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  highlightActiveCell();
+  updateTopContextBar(contacts.find(c => c.id === activeContactId) || contacts[0]);
+}
+
+function clickCell(r, c, val, contactId) {
+  selectedCoord = { r, c };
+  if (contactId) activeContactId = contactId;
+  document.getElementById('cell-ref').innerText = `${colLetters[c]}${r + 1}`;
+  document.getElementById('formula-bar').value = val;
+  highlightActiveCell();
+  const contact = contacts.find(item => item.id === contactId);
+  if (contact) updateTopContextBar(contact);
+}
+
+function highlightActiveCell() {
+  document.querySelectorAll('.excel-cell').forEach(el => el.classList.remove('excel-selected'));
+  const active = document.getElementById(`cell-${selectedCoord.r}-${selectedCoord.c}`);
+  if (active) active.classList.add('excel-selected');
+}
+
+function updateSelectedCellContent(newVal) {
+  const active = document.getElementById(`cell-${selectedCoord.r}-${selectedCoord.c}`);
+  if (active) active.innerText = newVal;
+}
+
+function updateTopContextBar(c) {
+  if (!c) return;
+  document.getElementById('bar-contact-name').textContent = `${c.name} (${c.phone})`;
+  document.getElementById('bar-sponsor-name').textContent = c.sponsor || '—';
+  document.getElementById('bar-sponsor-phone').textContent = c.sponsorPhone ? `(${c.sponsorPhone})` : '';
+  document.getElementById('bar-connector-name').textContent = c.connector || '—';
+  document.getElementById('bar-connector-phone').textContent = c.connectorPhone ? `(${c.connectorPhone})` : '';
+  document.getElementById('bar-known-as').textContent = c.knownAs ? `"${c.knownAs}"` : '—';
+  document.getElementById('bar-gender').textContent = c.gender || '—';
+  document.getElementById('bar-location').textContent = c.location || '—';
+  document.getElementById('bar-res-code').textContent = c.resCode || 'UNASSIGNED';
+}
+
+// ═══ TELEPROMPTER & DIALECT HOOKS ═══
+let currentDialect = 'en';
+const DIALECT_PITCHES = {
+  en: (c, a) => `"Hello <strong>${c.name}</strong>, good day! My name is <strong>${a.name}</strong> calling you from Gifted Mind Concept in ${a.location}. Your acquaintance, <strong>${c.connector}</strong>—whom you know as <em>"${c.knownAs}"</em>—specifically recommended you for our leadership capacity training. We have reserved a session for you at Suite D7, D Plaza 1, MTD - Zaria. Are you free this week?"`,
+  ha: (c, a) => `"Sannu <strong>${c.name}</strong>, barka da yini! Sunana <strong>${a.name}</strong> daga Gifted Mind Concept a Zaria. Abokin arzikinku, <strong>${c.connector}</strong>—wanda kuka sani da <em>"${c.knownAs}"</em>—ya ba da sunanku don gayyatarku zuwa wannan babban taron ci gaban kwarewa a Suite D7, D Plaza 1, MTD - Zaria. Ko zaku samu damar halarta a wannan makon?"`,
+  pid: (c, a) => `"Hello <strong>${c.name}</strong>, how body! My name na <strong>${a.name}</strong> from Gifted Mind Concept Zaria. Na <strong>${c.connector}</strong>—person wey you know as <em>"${c.knownAs}"</em>—tell us make we reach out to you for this personal capacity session. We reserve seat for you for Suite D7, D Plaza 1, MTD - Zaria. Which day for this week go convenient for you?"`,
+  yo: (c, a) => `"Bawo ni <strong>${c.name}</strong>, e ku osan! Oruko mi ni <strong>${a.name}</strong> lati Gifted Mind Concept. Ore yin, <strong>${c.connector}</strong>—eniti e mo si <em>"${c.knownAs}"</em>—lo so pe ki a kan si yin fun eto idagbasoke pataki yi ni Suite D7, D Plaza 1, MTD - Zaria. Nje e le wa ni ose yi?"`,
+  ig: (c, a) => `"Ndewo <strong>${c.name}</strong>! Aha m bu <strong>${a.name}</strong> site na Gifted Mind Concept. Enyi gi bu <strong>${c.connector}</strong>—onye i maara dika <em>"${c.knownAs}"</em>—wetara aha gi maka ogbako ikike a na Suite D7, D Plaza 1, MTD - Zaria. I nwere ike bia n'izu a?"`
+};
+
+function openCallPrompter(id) {
+  activeContactId = id;
+  const c = contacts.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('call-lead-name').textContent = c.name;
+  document.getElementById('call-lead-phone').textContent = c.phone;
+  document.getElementById('call-lead-dial-btn').href = `tel:${c.phone}`;
+  updateTeleprompterText(c);
+  document.getElementById('call-prompter-modal').classList.remove('hidden');
+}
+
+function switchDialect(lang) {
+  currentDialect = lang;
+  ['en','ha','pid','yo','ig'].forEach(l => {
+    const btn = document.getElementById(`dialect-btn-${l}`);
+    if (btn) btn.className = (l === lang) ? 'py-1 px-1.5 border rounded text-center font-bold bg-emerald-700 text-white' : 'py-1 px-1.5 border rounded text-center font-bold bg-gray-100 text-gray-700';
+  });
+  const c = contacts.find(x => x.id === activeContactId);
+  if (c) updateTeleprompterText(c);
+}
+
+function updateTeleprompterText(c) {
+  document.getElementById('call-teleprompter-text').innerHTML = DIALECT_PITCHES[currentDialect](c, CURRENT_USER);
+}
+
+// ═══ BOOKING WITH OFFLINE OUTBOX QUEUE ═══
+function openBookingModal(contactId) {
+  activeContactId = contactId;
+  const c = contacts.find(x => x.id === contactId);
+  if (!c) return;
+  document.getElementById('modal-code').value = '';
+  document.getElementById('booking-banner-day').textContent = formatShortDate(today());
+  document.getElementById('booking-banner-agent').textContent = `${CURRENT_USER.name} (${CURRENT_USER.code})`;
+
+  let candidate = new Date();
+  candidate.setDate(candidate.getDate() + 1);
+  let iso = candidate.toISOString().slice(0, 10);
+  for (let i = 0; i < 7; i++) {
+    if (isWorkingDay(iso)) break;
+    candidate.setDate(candidate.getDate() + 1);
+    iso = candidate.toISOString().slice(0, 10);
+  }
+  document.getElementById('modal-date').value = iso;
+  onDateChange();
+  document.getElementById('booking-modal').classList.remove('hidden');
+}
+
+function onDateChange() {
+  const dVal = document.getElementById('modal-date').value;
+  const dayName = getDayName(dVal);
+  const slots = getSlotsForDate(dVal);
+  const sel = document.getElementById('modal-time');
+  const warn = document.getElementById('modal-day-warning');
+  const lbl = document.getElementById('modal-day-label');
+
+  if (slots.length === 0) {
+    warn.classList.remove('hidden');
+    lbl.textContent = `📅 ${dayName}`;
+    sel.innerHTML = '<option>— closed —</option>';
+  } else {
+    warn.classList.add('hidden');
+    lbl.textContent = `📅 ${dayName} — ${slots.length} slots`;
+    sel.innerHTML = slots.map(s => `<option value="${s}">${s} (5 left)</option>`).join('');
+  }
+  syncSmsMessagePreview(true);
+}
+
+function syncSmsMessagePreview(forceDefault = false) {
+  const dVal = document.getElementById('modal-date').value;
+  const tVal = document.getElementById('modal-time').value;
+  const offVal = document.getElementById('modal-office').value;
+  const cVal = document.getElementById('modal-code').value.trim() || '[ENTER AGENT CODE]';
+  const ta = document.getElementById('modal-sms-body');
+
+  if (forceDefault || !ta.value) {
+    ta.value = `Gifted Mind Concept invites you\n${formatShortDate(dVal)}, By ${tVal}\n@${offVal}\n${cVal}\nBE PUNCTUAL!`;
+  }
+  handleSmsTyping();
+}
+
+function handleSmsTyping() {
+  const len = document.getElementById('modal-sms-body').value.length;
+  document.getElementById('sms-char-counter').textContent = `${len} chars (${Math.ceil(len / 160) || 1} SMS)`;
+}
+function resetSmsToDefault() { syncSmsMessagePreview(true); }
+
+function dispatchConfirmedBooking() {
+  const c = contacts.find(item => item.id === activeContactId);
+  const codeVal = document.getElementById('modal-code').value.trim();
+  const dateVal = document.getElementById('modal-date').value;
+  const timeVal = document.getElementById('modal-time').value;
+
+  if (!codeVal) {
+    alert('⚠️ Agent Code Required: Please type your agent code manually.');
+    document.getElementById('modal-code').focus();
+    return;
+  }
+  if (!isWorkingDay(dateVal)) {
+    alert('⚠️ Closed on Sundays — pick Mon to Sat.');
+    return;
+  }
+
+  c.status = 'booked';
+  c.resCode = codeVal;
+  c.date = dateVal;
+  c.schedule = `${formatShortDate(dateVal).slice(0, 11)} · ${timeVal}`;
+  c.customSms = document.getElementById('modal-sms-body').value;
+
+  // Add to Offline Outbox
+  outboxQueue.push({
+    type: 'sms',
+    title: `SMS to ${c.name} (${c.phone}) - Code: ${codeVal}`,
+    recipient: c.phone,
+    body: c.customSms,
+    timestamp: new Date().toLocaleTimeString('en-GB')
+  });
+
+  saveStateLocally();
+  closeModal('booking-modal');
+  renderSpreadsheet();
+  alert(`✅ Booking saved locally to your phone!\n📦 SMS queued in your Outbox.\n\nYou can continue working offline. When ready to send all SMS, turn on your Mobile Data and tap "Sync Outbox".`);
+}
+
+// ═══ SHIFT SUBMISSION WITH LOCAL STORAGE ═══
+function openSubmitWorkModal() {
+  document.getElementById('summary-total-contacts').textContent = contacts.length;
+  document.getElementById('summary-total-booked').textContent = contacts.filter(c => c.status === 'booked').length;
+  document.getElementById('summary-total-followup').textContent = contacts.filter(c => c.status === 'followup').length;
+  document.getElementById('submit-work-modal').classList.remove('hidden');
+}
+
+function dispatchWorkSubmission() {
+  const adminCode = document.getElementById('admin-target-code').value.trim();
+  const notes = document.getElementById('submission-notes').value.trim() || 'Work shift completed.';
+  const newBatchId = `SUB-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-0${verificationBatches.length + 1}`;
+
+  // Lock contacts on device
+  contacts.forEach(c => { c.locked = true; });
+
+  verificationBatches.unshift({
+    id: newBatchId,
+    dateDay: formatShortDate(today()),
+    agent: `${CURRENT_USER.name} (${CURRENT_USER.code})`,
+    targetAdmin: adminCode,
+    calls: contacts.length,
+    bookings: contacts.filter(c => c.status === 'booked').length,
+    status: 'Submitted (Offline Queued) ⏳',
+    note: notes
+  });
+
+  outboxQueue.push({
+    type: 'shift',
+    title: `Shift Batch ${newBatchId} to Admin (${adminCode})`,
+    timestamp: new Date().toLocaleTimeString('en-GB')
+  });
+
+  saveStateLocally();
+  closeModal('submit-work-modal');
+  renderSpreadsheet();
+  switchTab2('verification');
+  alert(`✅ Shift Batch ${newBatchId} locked locally on phone!\n📦 Submission added to Outbox. Turn on Mobile Data to upload to Admin.`);
+}
+
+// ═══ STATUS & REASON MODAL HANDLERS ═══
+function openStatusMenu(id) {
+  activeContactId = id;
+  const c = contacts.find(x => x.id === id);
+  document.getElementById('status-title').textContent = `Update — ${c.name}`;
+  document.getElementById('status-modal').classList.remove('hidden');
+}
+function chooseBooked() { closeModal('status-modal'); openBookingModal(activeContactId); }
+function selectReasonCode(code) {
+  closeModal('status-modal');
+  const cfg = { NO_ANSWER: 1, NOT_REACHABLE: 1, LINE_BUSY: 1, SWITCHED_OFF: 1, HANG_UP: 2, CALL_LATER: 2, LANGUAGE_BARRIER: 0, NOT_INTERESTED: 0, WRONG_NUMBER: 0, HOSTILE: 0 };
+  const days = cfg[code] || 0;
+  pendingReason = {
+    code,
+    category: days > 0 || code === 'LANGUAGE_BARRIER' ? 'followup' : 'not_booked',
+    retryDate: days > 0 ? addDays(days) : null,
+    defaultNote: days > 0 ? `${code.toLowerCase()} · retry in ${days}d` : `${code.toLowerCase()} · logged today`
+  };
+  document.getElementById('reason-note-badge').textContent = `${code} (${pendingReason.category})`;
+  document.getElementById('reason-note-text').value = pendingReason.defaultNote;
+  document.getElementById('reason-note-modal').classList.remove('hidden');
+}
+function saveReasonNote() {
+  const note = document.getElementById('reason-note-text').value.trim();
+  if (!note) { alert('Note cannot be empty'); return; }
+  const c = contacts.find(x => x.id === activeContactId);
+  c.status = pendingReason.category;
+  c.reason_code = pendingReason.code;
+  c.reason = note;
+  c.retryDate = pendingReason.retryDate;
+  saveStateLocally();
+  closeModal('reason-note-modal');
+  renderSpreadsheet();
+}
+
+function updateJoinedStatus(id, val) {
+  const c = contacts.find(x => x.id === id);
+  if (!c) return;
+  if (val === 'no_show') {
+    c.status = 'followup';
+    c.reason_code = 'NO_SHOW';
+    c.retryDate = addDays(2);
+    c.reason = `no show · retry in 2 days`;
+    c.resCode = '—';
+    c.schedule = '—';
+    c.joined = '';
+    alert('No-show lead auto-moved to follow-up (+2 days). Saved to device.');
+  } else {
+    c.joined = val;
+  }
+  saveStateLocally();
+  renderSpreadsheet();
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+// ═══ AUTH MOTION SEQUENCE ═══
+function switchAuthTab(tab) {
+  const slider = document.getElementById('auth-tab-slider');
+  if (tab === 'register') {
+    slider.style.transform = 'translateX(100%)';
+    document.getElementById('auth-btn-login').className = 'relative z-10 flex-1 py-1.5 text-center text-white/70 transition';
+    document.getElementById('auth-btn-register').className = 'relative z-10 flex-1 py-1.5 text-center text-emerald-900 transition';
+    document.getElementById('auth-form-login').classList.add('hidden');
+    document.getElementById('auth-form-register').classList.remove('hidden');
+  } else {
+    slider.style.transform = 'translateX(0)';
+    document.getElementById('auth-btn-login').className = 'relative z-10 flex-1 py-1.5 text-center text-emerald-900 transition';
+    document.getElementById('auth-btn-register').className = 'relative z-10 flex-1 py-1.5 text-center text-white/70 transition';
+    document.getElementById('auth-form-login').classList.remove('hidden');
+    document.getElementById('auth-form-register').classList.add('hidden');
+  }
+}
+
+function startUnlockSequence(type) {
+  const overlay = document.getElementById('unlock-mechanism-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('unlock-step-text').textContent = "DECRYPTING OFFLINE DATABASE...";
+  setTimeout(() => {
+    document.getElementById('lock-icon').textContent = "🔓";
+    document.getElementById('unlock-step-text').textContent = "ACCESS GRANTED — LAUNCHING DC WORKSPACE";
+  }, 600);
+  setTimeout(() => {
+    const screen = document.getElementById('auth-screen');
+    screen.classList.add('fade-out');
+    setTimeout(() => screen.remove(), 500);
+    renderSpreadsheet();
+    checkNetworkState();
+    updateOutboxUI();
+  }, 1100);
+}
+
+function signOut() { location.reload(); }
+
+// ═══ SHEET SWITCHING ═══
+const ALL_TABS = ['contacts','followup','verification','calendar','distribution','approvals','reports','settings','deleted','organizations','owners','audit'];
+function switchTab2(tab) {
+  ALL_TABS.forEach(t => {
+    const el = document.getElementById('view-' + t);
+    if (el) el.classList.add('hidden');
+    const btn = document.querySelector(`[data-tab="${t}"]`);
+    if (btn) btn.className = 'tab-btn h-full px-3 bg-transparent border-t-2 border-transparent font-medium text-gray-600 hover:bg-gray-200 rounded-t flex items-center';
+  });
+  const act = document.getElementById('view-' + tab);
+  if (act) act.classList.remove('hidden');
+  const btn = document.querySelector(`[data-tab="${tab}"]`);
+  if (btn) btn.className = 'tab-btn h-full px-3 bg-white border-t-2 border-[#107c41] font-bold text-[#107c41] rounded-t flex items-center shadow-xs';
+
+  if (tab === 'contacts') renderSpreadsheet();
+  if (tab === 'followup') renderFollowupQueue();
+  if (tab === 'verification') renderVerificationLogs();
+  if (tab === 'calendar') renderCalendar();
+}
+
+function renderVerificationLogs() {
+  const b = document.getElementById('verification-logs-body');
+  if (!b) return;
+  b.innerHTML = verificationBatches.map(v => `
+    <tr class="hover:bg-gray-50">
+      <td class="p-2 font-mono font-bold text-blue-800">${v.id}</td>
+      <td class="p-2">${v.dateDay}</td>
+      <td class="p-2">${v.agent}</td>
+      <td class="p-2 font-mono">${v.targetAdmin}</td>
+      <td class="p-2 text-center font-bold">${v.calls} calls / ${v.bookings} bookings</td>
+      <td class="p-2"><span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-bold text-[10px]">${v.status}</span></td>
+      <td class="p-2 text-right"><button onclick="alert('${v.note}')" class="text-blue-700 font-bold hover:underline">View</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderFollowupQueue() {
+  const el = document.getElementById('view-followup');
+  const followups = contacts.filter(c => c.status === 'followup');
+  el.innerHTML = `
+    <div class="max-w-4xl mx-auto space-y-3">
+      <h2 class="text-sm font-bold">Review & Follow-Up Priority Queue (${followups.length})</h2>
+      ${followups.map(c => `
+        <div class="p-3 bg-white border rounded shadow-xs flex justify-between items-center text-xs">
+          <div>
+            <div class="font-bold text-gray-900">${c.name} · ${c.phone}</div>
+            <div class="text-gray-500 text-[11px]">${c.reason || 'Follow-up'} · Known As: <strong>"${c.knownAs}"</strong></div>
+          </div>
+          <button onclick="openBookingModal(${c.id})" class="px-3 py-1 bg-[#107c41] text-white font-bold rounded">Book Now</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderCalendar() {
+  const g = document.getElementById('calendar-grid');
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  g.innerHTML = days.map(d => `
+    <div class="bg-white border rounded overflow-hidden text-[11px] shadow-xs">
+      <div class="bg-[#107c41] text-white px-2 py-1.5 font-bold">${d}</div>
+      <div class="p-1.5 space-y-1">
+        ${(PROGRAMME_SCHEDULE[d] || []).map(s => `
+          <div class="p-1 border border-dashed rounded text-[10px] text-gray-500 flex justify-between">
+            <span>${s}</span><span class="text-[9px]">open</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterSpreadsheet() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const st = document.getElementById('filter-status').value;
+  const f = contacts.filter(c => {
+    const mQ = !q || c.name.toLowerCase().includes(q) || c.phone.includes(q);
+    const mS = st === 'ALL' || c.status === st;
+    return mQ && mS;
+  });
+  renderSpreadsheet(f);
+}
+
+// ═══ BOOT ═══
+window.addEventListener('DOMContentLoaded', () => {
+  checkNetworkState();
+  updateOutboxUI();
+});
+</script>
+</body>
+</html>
